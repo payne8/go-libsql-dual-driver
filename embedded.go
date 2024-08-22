@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
+	"github.com/tursodatabase/go-libsql"
 	"os"
 	"path/filepath"
 )
