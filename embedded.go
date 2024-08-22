@@ -62,7 +62,7 @@ func NewLibSqlDB(primaryUrl string, migrationFiles embed.FS, opts ...Options) (*
 	}
 
 	if l.readYourWrites != nil {
-		lsOpts = append(lsOpts, libsql.WithReadYourWrites(l.readYourWrites))
+		lsOpts = append(lsOpts, libsql.WithReadYourWrites(&l.readYourWrites))
 	}
 
 	connector, err := libsql.NewEmbeddedReplicaConnector(dbPath, primaryUrl,
