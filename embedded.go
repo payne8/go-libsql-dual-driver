@@ -1,6 +1,6 @@
 //go:build !windows
 
-package libsqlDB
+package libsqldb
 
 import (
 	"database/sql"
@@ -25,6 +25,8 @@ var syncInterval = 200 * time.Millisecond
 
 func NewLibSqlDB(primaryUrl string, migrationFiles embed.FS, opts ...Options) (*LibSqlDB, error) {
 	l := libSqlDefaults()
+
+	_migrationFiles = migrationFiles
 
 	for _, option := range opts {
 		err := option(l)

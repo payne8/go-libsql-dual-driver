@@ -1,18 +1,24 @@
 package main
 
 import (
+	"embed"
 	"fmt"
+	"git.sa.vin/payne8/libsqldb"
 	"os"
 )
+
+//go:embed migrations/*.sql
+var migrationFiles embed.FS
 
 func main() {
 	primaryUrl := os.Getenv("LIBSQL_DATABASE_URL")
 	authToken := os.Getenv("LIBSQL_AUTH_TOKEN")
 
-	tdb, err := libsqlDB.NewLibSqlDB(
+	tdb, err := libsqldb.NewLibSqlDB(
 		primaryUrl,
-		libsqlDB.WithAuthToken(authToken),
-		libsqlDB.WithLocalDBName("local.db"),
+		migrationFiles,
+		libsqldb.WithAuthToken(authToken),
+		libsqldb.WithLocalDBName("local.db"),
 	)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to open db %s: %s", primaryUrl, err)

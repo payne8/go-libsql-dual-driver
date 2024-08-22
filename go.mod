@@ -1,4 +1,4 @@
-module {{.ModulePath}}
+module git.sa.vin/payne8/libsqldb
 
 go 1.21
 

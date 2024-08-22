@@ -1,6 +1,6 @@
 //go:build windows
 
-package libsqlDB
+package libsqldb
 
 import (
 	"database/sql"
@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	multierror "github.com/hashicorp/go-multierror"
+	"github.com/hashicorp/go-multierror"
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
@@ -25,6 +25,8 @@ type LibSqlDB struct {
 
 func NewLibSqlDB(primaryUrl string, migrationFiles embed.FS, opts ...Options) (*LibSqlDB, error) {
 	l := &LibSqlDB{}
+
+	_migrationFiles = migrationFiles
 
 	for _, option := range opts {
 		err := option(l)

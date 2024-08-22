@@ -1,4 +1,4 @@
-package libsqlDB
+package libsqldb
 
 import (
 	"database/sql"
