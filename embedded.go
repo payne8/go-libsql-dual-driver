@@ -11,7 +11,7 @@ import (
 )
 
 type LibSqlDB struct {
-	db             *sql.DB
+	DB             *sql.DB
 	connector      *libsql.Connector // only used for embedded replica
 	dir            string            // only used for embedded replica
 	localDBName    string            // only used for embedded replica

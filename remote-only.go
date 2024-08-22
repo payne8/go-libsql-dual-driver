@@ -13,7 +13,7 @@ import (
 )
 
 type LibSqlDB struct {
-	db *sql.DB
+	DB *sql.DB
 
 	dir            string // only used for embedded replica
 	localDBName    string // only used for embedded replica but needs to be here for consistency
