@@ -1,4 +1,4 @@
-package db
+package libsqlDB
 
 import (
 	"database/sql"
@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/fs"
 	"path/filepath"
+	"time"
 )
 
 type Migrations struct {
@@ -13,8 +14,10 @@ type Migrations struct {
 	query string
 }
 
-//go:embed migrations/*.sql
-var migrationFiles embed.FS
+type Options func(*LibSqlDB) error
+
+// use something like this in the user's code -> //go:embed migrations/*.sql
+var _migrationFiles embed.FS
 
 var migrations []Migrations
 
@@ -26,12 +29,12 @@ var migrations []Migrations
 // setupMigrations initializes the filesystem and reads the migration files into the migrations variable
 func setupMigrations() error {
 	// Walk through the embedded files and read their contents
-	err := fs.WalkDir(migrationFiles, ".", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(_migrationFiles, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		if !d.IsDir() {
-			content, err := migrationFiles.ReadFile(path)
+			content, err := _migrationFiles.ReadFile(path)
 			if err != nil {
 				return err
 			}
@@ -86,4 +89,52 @@ func (t *LibSqlDB) Migrate() error {
 		}
 	}
 	return nil
+}
+
+// WithLocalDBName sets the local database name for the embedded database
+func WithLocalDBName(localDBName string) Options {
+	return func(l *LibSqlDB) error {
+		l.localDBName = localDBName
+		return nil
+	}
+}
+
+// WithSyncInterval sets the sync interval for the embedded database
+func WithSyncInterval(syncInterval time.Duration) Options {
+	return func(l *LibSqlDB) error {
+		l.syncInterval = syncInterval
+		return nil
+	}
+}
+
+// WithDir sets the directory for the embedded database
+func WithDir(dir string) Options {
+	return func(l *LibSqlDB) error {
+		l.dir = dir
+		return nil
+	}
+}
+
+// WithAuthToken sets the auth token for the database
+func WithAuthToken(authToken string) Options {
+	return func(l *LibSqlDB) error {
+		l.authToken = authToken
+		return nil
+	}
+}
+
+// WithEncryptionKey sets the encryption key for the embedded database
+func WithEncryptionKey(key string) Options {
+	return func(l *LibSqlDB) error {
+		l.encryptionKey = key
+		return nil
+	}
+}
+
+// WithReadYourWrites sets the encryption key for the embedded database
+func WithReadYourWrites(readYourWrites bool) Options {
+	return func(l *LibSqlDB) error {
+		l.readYourWrites = &readYourWrites
+		return nil
+	}
 }
