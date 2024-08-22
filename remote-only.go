@@ -51,14 +51,14 @@ func NewLibSqlDB(primaryUrl string, migrationFiles embed.FS, opts ...Options) (*
 	}
 
 	return &LibSqlDB{
-		db: db,
+		DB: db,
 	}, nil
 }
 
 func (t *LibSqlDB) Close() error {
 	var resultError *multierror.Error
 
-	if err := t.db.Close(); err != nil {
+	if err := t.DB.Close(); err != nil {
 		resultError = multierror.Append(resultError, fmt.Errorf("failed to close database: %w", err))
 	}
 

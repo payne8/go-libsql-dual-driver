@@ -58,10 +58,10 @@ func (t *LibSqlDB) Migrate() error {
 	// check if migration table exists
 	var migrationsCheck string
 	//goland:noinspection SqlResolve
-	err := t.db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name='migrations'").Scan(&migrationsCheck)
+	err := t.DB.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name='migrations'").Scan(&migrationsCheck)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			_, err := t.db.Exec("CREATE TABLE migrations (name TEXT NOT NULL)")
+			_, err := t.DB.Exec("CREATE TABLE migrations (name TEXT NOT NULL)")
 			if err != nil {
 				return fmt.Errorf("error creating migrations table | %w", err)
 			}
@@ -72,14 +72,14 @@ func (t *LibSqlDB) Migrate() error {
 
 	for _, migration := range migrations {
 		var migrationInHistory string
-		err = t.db.QueryRow("SELECT name FROM migrations WHERE name = ?", migration.name).Scan(&migrationInHistory)
+		err = t.DB.QueryRow("SELECT name FROM migrations WHERE name = ?", migration.name).Scan(&migrationInHistory)
 		if err != nil {
 			if err == sql.ErrNoRows {
-				_, err := t.db.Exec(migration.query)
+				_, err := t.DB.Exec(migration.query)
 				if err != nil {
 					return fmt.Errorf("error running migration: %s | %w", migration.name, err)
 				}
-				_, err = t.db.Exec("INSERT INTO migrations (name) VALUES (?)", migration.name)
+				_, err = t.DB.Exec("INSERT INTO migrations (name) VALUES (?)", migration.name)
 				if err != nil {
 					return fmt.Errorf("error inserting migration: %s into migrations table | %w", migration.name, err)
 				}

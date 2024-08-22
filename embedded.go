@@ -76,7 +76,7 @@ func NewLibSqlDB(primaryUrl string, migrationFiles embed.FS, opts ...Options) (*
 		return nil, fmt.Errorf("error setting up migrations | %w", err)
 	}
 
-	l.db = db
+	l.DB = db
 	l.connector = connector
 	l.dir = dir
 
