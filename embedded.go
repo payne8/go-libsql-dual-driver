@@ -6,9 +6,11 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
+	"github.com/hashicorp/go-multierror"
 	"github.com/tursodatabase/go-libsql"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 type LibSqlDB struct {
@@ -93,7 +95,7 @@ func libSqlDefaults() *LibSqlDB {
 func (t *LibSqlDB) Close() error {
 	var resultError *multierror.Error
 
-	if err := t.db.Close(); err != nil {
+	if err := t.DB.Close(); err != nil {
 		resultError = multierror.Append(resultError, fmt.Errorf("failed to close database: %w", err))
 	}
 
