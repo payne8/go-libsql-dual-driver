@@ -14,6 +14,7 @@ func main() {
 	primaryUrl := os.Getenv("LIBSQL_DATABASE_URL")
 	authToken := os.Getenv("LIBSQL_AUTH_TOKEN")
 
+	// Open the database
 	tdb, err := libsqldb.NewLibSqlDB(
 		primaryUrl,
 		migrationFiles,
@@ -25,6 +26,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Migrate the database
 	err = tdb.Migrate()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to migrate db %s: %s", primaryUrl, err)
