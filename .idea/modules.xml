@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/credit-based-payments.iml" filepath="$PROJECT_DIR$/.idea/credit-based-payments.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/libsqldb.iml" filepath="$PROJECT_DIR$/.idea/libsqldb.iml" />
     </modules>
   </component>
 </project>

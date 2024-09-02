@@ -1,20 +1,48 @@
-# LibSQL Boilerplate Golang
+# Go LibSQL DualDriver
 
-Copy this repo to have a golang application that is already set up to work with libSQL.
+Welcome to the Go LibSQL DualDriver! This library provides a seamless interface for connecting to LibSQL databases, whether you’re working on Windows or other platforms. By automatically switching between the remote LibSQL driver for Windows and the embedded driver for other platforms, this wrapper ensures that your development environment is as close to production as possible.
 
-## How to use
+## Key Features
 
-1. Copy this repo to your new project
-2. Modify two files.
+- **Cross-Platform Support:** Automatically chooses the appropriate driver—remote for Windows, embedded for other systems.
+- **Built-in Migration Tool:** Simplifies database migrations by allowing you to embed SQL files directly in your Go code.
 
-   * go.mod needs a new package name.
-   * main.go needs to use the package name to import from `{{packageName}}/db`
+## Getting Started
 
-3. Set up your environment variables
+### Installation
 
-   * LIBSQL_AUTH_TOKEN
-   * LIBSQL_DATABASE_URL
+To start using this library, simply import it and initialize the database connection in your Go application. The library will handle the rest.
 
-## Windows?
+### Example Usage
 
-This project is designed to use an embedded replica by default but Windows is not supported by libSQL. So this project has special build tags for Windows and sets up a libSQL remote driver. If your build target doesn't include Windows you can remote the file `db/remote-only.go`.
+Here’s a quick example of how to set up a database connection with embedded migration files:
+
+```golang
+//go:embed migrations/*.sql
+var migrationFiles embed.FS
+
+tdb, err := libsqldb.NewLibSqlDB(
+    primaryUrl,
+    migrationFiles,
+    libsqldb.WithAuthToken(authToken),
+    libsqldb.WithLocalDBName("local.db"),
+)
+```
+
+## Why Use This Library?
+I developed this library to streamline the process of setting up a database connection in Go, complete with built-in migration capabilities. During development, I encountered issues with using the embedded driver on Windows. As I researched, I discovered [others had similar issues](https://github.com/tursodatabase/go-libsql/issues/30). This wrapper solves that problem by automatically selecting the appropriate driver based on your operating system.
+
+## How to Use
+For a complete example, check out the examples/basic-usage directory in this repository.
+
+Before running your application, make sure to set the following environment variables:
+
+```bash
+LIBSQL_AUTH_TOKEN
+LIBSQL_DATABASE_URL
+```
+
+### Special Note for Windows Users
+This library defaults to using the embedded driver for better performance and closer parity with production environments. However, due to the lack of support for embedded LibSQL on Windows, this library uses a remote driver when running on Windows. Special build tags are included to ensure seamless operation across platforms.
+
+Feel free to explore the repository and experiment with the examples provided. Happy coding!
