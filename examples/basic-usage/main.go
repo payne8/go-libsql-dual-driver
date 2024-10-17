@@ -17,9 +17,9 @@ func main() {
 	// Open the database
 	tdb, err := libsqldb.NewLibSqlDB(
 		primaryUrl,
-		migrationFiles,
+		libsqldb.WithMigrationFiles(migrationFiles),
 		libsqldb.WithAuthToken(authToken),
-		libsqldb.WithLocalDBName("local.db"),
+		libsqldb.WithLocalDBName("local.db"), // will not be used for remote-only
 	)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to open db %s: %s", primaryUrl, err)

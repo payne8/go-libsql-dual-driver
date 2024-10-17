@@ -22,14 +22,13 @@ type LibSqlDB struct {
 	syncInterval   time.Duration // only used for embedded replica
 	encryptionKey  string        // only used for embedded replica
 	readYourWrites *bool         // only used for embedded replica
+	useMigrations  bool
+	migrationFiles embed.FS
+	migrations     []Migrations
 }
 
-var syncInterval = 200 * time.Millisecond
-
-func NewLibSqlDB(primaryUrl string, migrationFiles embed.FS, opts ...Options) (*LibSqlDB, error) {
+func NewLibSqlDB(primaryUrl string, opts ...Options) (*LibSqlDB, error) {
 	l := libSqlDefaults()
-
-	_migrationFiles = migrationFiles
 
 	for _, option := range opts {
 		err := option(l)
@@ -74,9 +73,11 @@ func NewLibSqlDB(primaryUrl string, migrationFiles embed.FS, opts ...Options) (*
 
 	db := sql.OpenDB(connector)
 
-	err = setupMigrations()
-	if err != nil {
-		return nil, fmt.Errorf("error setting up migrations | %w", err)
+	if l.useMigrations {
+		err = l.setupMigrations()
+		if err != nil {
+			return nil, fmt.Errorf("error setting up migrations | %w", err)
+		}
 	}
 
 	l.DB = db

@@ -32,15 +32,6 @@ tdb, err := libsqldb.NewLibSqlDB(
 ## Why Use This Library?
 I developed this library to streamline the process of setting up a database connection in Go, complete with built-in migration capabilities. During development, I encountered issues with using the embedded driver on Windows. As I researched, I discovered [others had similar issues](https://github.com/tursodatabase/go-libsql/issues/30). This wrapper solves that problem by automatically selecting the appropriate driver based on your operating system.
 
-## How to Use
-For a complete example, check out the examples/basic-usage directory in this repository.
-
-Before running your application, make sure to set the following environment variables:
-
-```bash
-LIBSQL_AUTH_TOKEN
-LIBSQL_DATABASE_URL
-```
 
 ### Special Note for Windows Users
 This library defaults to using the embedded driver for better performance and closer parity with production environments. However, due to the lack of support for embedded LibSQL on Windows, this library uses a remote driver when running on Windows. Special build tags are included to ensure seamless operation across platforms.

@@ -16,25 +16,20 @@ type Migrations struct {
 
 type Options func(*LibSqlDB) error
 
-// use something like this in the user's code -> //go:embed migrations/*.sql
-var _migrationFiles embed.FS
-
-var migrations []Migrations
-
 // func NewLibSqlDB is defined in embedded.go and remote-only.go files
 // these files are used to define the LibSqlDB struct and the NewLibSqlDB function
 // they have different initializations based on the environment, embedded or remote-only
 // Windows does not currently support the embedded database, so the remote-only file is used
 
 // setupMigrations initializes the filesystem and reads the migration files into the migrations variable
-func setupMigrations() error {
+func (t *LibSqlDB) setupMigrations() error {
 	// Walk through the embedded files and read their contents
-	err := fs.WalkDir(_migrationFiles, ".", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(t.migrationFiles, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		if !d.IsDir() {
-			content, err := _migrationFiles.ReadFile(path)
+			content, err := t.migrationFiles.ReadFile(path)
 			if err != nil {
 				return err
 			}
@@ -43,7 +38,7 @@ func setupMigrations() error {
 				name:  filepath.Base(path),
 				query: string(content),
 			}
-			migrations = append(migrations, migration)
+			t.migrations = append(t.migrations, migration)
 		}
 		return nil
 	})
@@ -55,6 +50,10 @@ func setupMigrations() error {
 
 // Migrate updates the connected LibSqlDB to the latest schema based on the given migrations
 func (t *LibSqlDB) Migrate() error {
+	if !t.useMigrations {
+		return fmt.Errorf("migrations not enabled")
+	}
+
 	// check if migration table exists
 	var migrationsCheck string
 	//goland:noinspection SqlResolve
@@ -70,7 +69,7 @@ func (t *LibSqlDB) Migrate() error {
 		}
 	}
 
-	for _, migration := range migrations {
+	for _, migration := range t.migrations {
 		var migrationInHistory string
 		err = t.DB.QueryRow("SELECT name FROM migrations WHERE name = ?", migration.name).Scan(&migrationInHistory)
 		if err != nil {
@@ -135,6 +134,14 @@ func WithEncryptionKey(key string) Options {
 func WithReadYourWrites(readYourWrites bool) Options {
 	return func(l *LibSqlDB) error {
 		l.readYourWrites = &readYourWrites
+		return nil
+	}
+}
+
+func WithMigrationFiles(migrationFiles embed.FS) Options {
+	return func(l *LibSqlDB) error {
+		l.useMigrations = true
+		l.migrationFiles = migrationFiles
 		return nil
 	}
 }
