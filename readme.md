@@ -23,9 +23,9 @@ var migrationFiles embed.FS
 
 tdb, err := libsqldb.NewLibSqlDB(
     primaryUrl,
-    migrationFiles,
+    libsqldb.WithMigrationFiles(migrationFiles),
     libsqldb.WithAuthToken(authToken),
-    libsqldb.WithLocalDBName("local.db"),
+    libsqldb.WithLocalDBName("local.db"), // will not be used for remote-only
 )
 ```
 
