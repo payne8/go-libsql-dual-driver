@@ -24,7 +24,7 @@ type LibSqlDB struct {
 	readYourWrites *bool         // only used for embedded replica
 	useMigrations  bool
 	migrationFiles embed.FS
-	migrations     []Migrations
+	migrations     []migrations
 }
 
 func NewLibSqlDB(primaryUrl string, opts ...Options) (*LibSqlDB, error) {

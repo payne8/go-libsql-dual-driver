@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type Migrations struct {
+type migrations struct {
 	name  string
 	query string
 }
@@ -34,7 +34,7 @@ func (t *LibSqlDB) setupMigrations() error {
 				return err
 			}
 
-			migration := Migrations{
+			migration := migrations{
 				name:  filepath.Base(path),
 				query: string(content),
 			}
