@@ -1,4 +1,4 @@
-module github.com/payne8/libsqldb
+module github.com/payne8/go-libsql-dual-driver
 
 go 1.21
 

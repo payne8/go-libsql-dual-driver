@@ -3,7 +3,7 @@ package main
 import (
 	"embed"
 	"fmt"
-	"git.sa.vin/payne8/libsqldb"
+	libsqldb "github.com/payne8/go-libsql-dual-driver"
 	"os"
 )
 
